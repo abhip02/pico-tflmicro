@@ -1,0 +1,16 @@
+file,session_id,trial_id,label,mode
+session1/stop.csv,wearer1_session1,stop_01,STOP,PREPROCESSED
+session1/forward.csv,wearer1_session1,forward_01,FORWARD,PREPROCESSED
+session1/reverse.csv,wearer1_session1,reverse_01,REVERSE,PREPROCESSED
+session1/left.csv,wearer1_session1,left_01,LEFT,PREPROCESSED
+session1/right.csv,wearer1_session1,right_01,RIGHT,PREPROCESSED
+session2/stop.csv,wearer1_session2,stop_01,STOP,PREPROCESSED
+session2/forward.csv,wearer1_session2,forward_01,FORWARD,PREPROCESSED
+session2/reverse.csv,wearer1_session2,reverse_01,REVERSE,PREPROCESSED
+session2/left.csv,wearer1_session2,left_01,LEFT,PREPROCESSED
+session2/right.csv,wearer1_session2,right_01,RIGHT,PREPROCESSED
+session3/stop.csv,wearer1_session3,stop_01,STOP,PREPROCESSED
+session3/forward.csv,wearer1_session3,forward_01,FORWARD,PREPROCESSED
+session3/reverse.csv,wearer1_session3,reverse_01,REVERSE,PREPROCESSED
+session3/left.csv,wearer1_session3,left_01,LEFT,PREPROCESSED
+session3/right.csv,wearer1_session3,right_01,RIGHT,PREPROCESSED

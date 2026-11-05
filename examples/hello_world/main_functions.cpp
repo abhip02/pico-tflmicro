@@ -14,7 +14,7 @@ limitations under the License.
 ==============================================================================*/
 
 #include "constants.h"
-#include "hello_world_float_model_data.h"
+#include "hello_world_int8_model_data.h"
 #include "main_functions.h"
 #include "output_handler.h"
 #include "tensorflow/lite/micro/micro_interpreter.h"
@@ -31,8 +31,9 @@ TfLiteTensor* input = nullptr;
 TfLiteTensor* output = nullptr;
 int inference_count = 0;
 
-constexpr int kTensorArenaSize = 2000;
-uint8_t tensor_arena[kTensorArenaSize];
+// Host pointers and allocator metadata are larger than on the RP2040.
+constexpr int kTensorArenaSize = 4096;
+alignas(16) uint8_t tensor_arena[kTensorArenaSize];
 }  // namespace
 
 // The name of this function is important for Arduino compatibility.
@@ -41,7 +42,7 @@ void setup() {
 
   // Map the model into a usable data structure. This doesn't involve any
   // copying or parsing, it's a very lightweight operation.
-  model = tflite::GetModel(g_hello_world_float_model_data);
+  model = tflite::GetModel(g_hello_world_int8_model_data);
   if (model->version() != TFLITE_SCHEMA_VERSION) {
     MicroPrintf(
         "Model provided is schema version %d not equal "

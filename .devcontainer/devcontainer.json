@@ -1,0 +1,17 @@
+{
+  "name": "TensorFlow Lite Micro - laptop and RP2040",
+  "build": { "dockerfile": "Dockerfile" },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/pico-tflmicro,type=bind",
+  "workspaceFolder": "/workspaces/pico-tflmicro",
+  "remoteUser": "root",
+  "postCreateCommand": "./scripts/run-hello-world.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "cmake.configureSettings": { "TFLM_BUILD_HOST": "ON" },
+        "cmake.buildDirectory": "${workspaceFolder}/build/cmake-devcontainer"
+      },
+      "extensions": ["ms-vscode.cpptools", "ms-vscode.cmake-tools"]
+    }
+  }
+}

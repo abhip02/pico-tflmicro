@@ -15,6 +15,8 @@ limitations under the License.
 
 #include "output_handler.h"
 
+#include <algorithm>
+
 #include "pico/stdlib.h"
 #include "pico/time.h"
 #include "hardware/irq.h"
@@ -25,7 +27,10 @@ limitations under the License.
 
 namespace {
 
-int g_led_brightness = 0;
+// Shared between the inference loop and the PWM interrupt handler.
+volatile int g_led_brightness = 0;
+constexpr int kUpdateDelayMs = 50;
+constexpr unsigned int kLogEveryNInferences = 10;
 
 // For details on what this code is doing, see
 // https://github.com/raspberrypi/pico-examples/blob/master/pwm/led_fade
@@ -53,6 +58,12 @@ void init_pwm_fade() {
   // Get some sensible defaults for the slice configuration. By default, the
   // counter is allowed to wrap over its maximum range (0 to 2**16-1)
   pwm_config config = pwm_get_default_config();
+#ifdef POLOLU_3PI_2040_ROBOT
+  // The robot's yellow LED is active-low.
+  pwm_config_set_output_polarity(
+      &config, pwm_gpio_to_channel(PICO_DEFAULT_LED_PIN) == PWM_CHAN_A,
+      pwm_gpio_to_channel(PICO_DEFAULT_LED_PIN) == PWM_CHAN_B);
+#endif
   // Set divider, reduces counter clock to sysclock/this value
   pwm_config_set_clkdiv(&config, 4.f);
   // Load the configuration into our PWM slice, and set it running.
@@ -67,16 +78,27 @@ void HandleOutput(float x_value, float y_value) {
   if (!is_initialized) {
     init_pwm_fade();
     is_initialized = true;
+    MicroPrintf("TFLite Micro: int8 sine model running. %d predictions per "
+                "cycle, %d ms between updates.",
+                kInferencesPerCycle, kUpdateDelayMs);
   }
 
   // Calculate the brightness of the LED such that y=-1 is fully off
   // and y=1 is fully on. The LED's brightness can range from 0-255.
-  g_led_brightness = (int)(127.5f * (y_value + 1));
+  g_led_brightness = std::max(0, std::min(255, (int)(127.5f * (y_value + 1))));
 
-  // Log the current brightness value for display in the console.
-  MicroPrintf("%d\n", g_led_brightness);
-   
-  // By default the sine wave is too fast to see in the LED, so slow
-  // down the whole program deliberately so it's more visible.
-  sleep_ms(10);
+  // Log twice per second so a USB terminal clearly shows fresh inferences,
+  // including the model's input and predicted output driving the LED.
+  static unsigned int inference_number = 0;
+  ++inference_number;
+  if ((inference_number - 1) % kLogEveryNInferences == 0) {
+    const unsigned int cycle = (inference_number - 1) / kInferencesPerCycle + 1;
+    MicroPrintf("Model inference %u | cycle %u | x=%.3f | prediction=%.3f | "
+                "LED=%d/255",
+                inference_number, cycle, static_cast<double>(x_value),
+                static_cast<double>(y_value), static_cast<int>(g_led_brightness));
+  }
+
+  // 120 model predictions x 50 ms gives an approximately six-second fade.
+  sleep_ms(kUpdateDelayMs);
 }

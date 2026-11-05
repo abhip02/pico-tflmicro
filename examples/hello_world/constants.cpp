@@ -15,5 +15,6 @@ limitations under the License.
 
 #include "constants.h"
 
-// This is a small number so that it's easy to read the logs
-const int kInferencesPerCycle = 20;
+// At 50 ms per update on the robot, 120 predictions make a smooth six-second
+// brightness cycle. Every step is a fresh inference from the sine model.
+const int kInferencesPerCycle = 120;

@@ -1,0 +1,3 @@
+# Python 3.10-3.13; keep training in an isolated environment.
+tensorflow==2.20.0
+numpy>=1.26,<3

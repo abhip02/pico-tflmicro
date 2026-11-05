@@ -40,7 +40,9 @@
  */
 
 // Uncomment this to try the experimental dual core support on the RP2040.
+#ifndef TFLM_HOST_BUILD
 #define TF_LITE_PICO_MULTICORE
+#endif
 
 #ifdef TF_LITE_PICO_MULTICORE
 

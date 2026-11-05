@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.12)
+option(TFLM_BUILD_HOST "Build hello_world for the local computer" OFF)
+
+if(NOT TFLM_BUILD_HOST)
 # == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
 if(WIN32)
     set(USERHOME $ENV{USERPROFILE})
@@ -14,16 +18,17 @@ endif()
 # ====================================================================================
 set(PICO_BOARD pico CACHE STRING "Board type")
 
-cmake_minimum_required(VERSION 3.12)
-
 # Pull in PICO SDK (must be before project)
 include(pico_sdk_import.cmake)
+endif()
 
 project(pico-tflmicro C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
-pico_sdk_init()
+if(NOT TFLM_BUILD_HOST)
+  pico_sdk_init()
+endif()
 
 add_library(pico-tflmicro STATIC)
 
@@ -39,6 +44,7 @@ target_include_directories(pico-tflmicro
   ${CMAKE_CURRENT_LIST_DIR}/src/third_party/cmsis_nn/Include
 )
 
+if(NOT TFLM_BUILD_HOST)
 target_compile_definitions(
   pico-tflmicro
   PUBLIC
@@ -65,11 +71,24 @@ target_link_libraries(
   pico_stdlib
   pico_multicore
 )
+else()
+  target_compile_definitions(pico-tflmicro PUBLIC
+    # This generated source tree uses ARDUINO to select its static-memory API.
+    TFLM_HOST_BUILD=1 ARDUINO=1 TF_LITE_STATIC_MEMORY=1
+    TF_LITE_DISABLE_X86_NEON=1)
+  target_compile_options(pico-tflmicro PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti;-fno-exceptions>)
+endif()
 
 target_sources(pico-tflmicro
   PRIVATE
 {{LIBRARY_SOURCES}}
 )
+
+if(TFLM_BUILD_HOST)
+  include(cmake/host.cmake)
+  return()
+endif()
 
 add_library(pico-tflmicro_test STATIC)
 

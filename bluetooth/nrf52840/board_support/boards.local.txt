@@ -1,0 +1,67 @@
+# SparkFun Pro nRF52840 Mini (DEV-15025) for Adafruit nRF52 core 1.7.0
+# Added locally (boards.local.txt is merged with boards.txt by the Arduino IDE).
+# Based on the core's feather52840 entry (same nRF52840 + S140 6.1.1 bootloader),
+# with SparkFun's name, USB IDs and variant from
+# github.com/sparkfun/nRF52840_Breakout_MDBT50Q/Firmware/Arduino.
+# To remove: delete this file and variants/sparkfun_nrf52840_mini.
+
+sparkfunnrf52840mini.name=SparkFun Pro nRF52840 Mini
+
+# USB IDs (SparkFun): DFU CDC, DFU CDC+MSC (UF2), application
+sparkfunnrf52840mini.vid.0=0x1B4F
+sparkfunnrf52840mini.pid.0=0x002A
+sparkfunnrf52840mini.vid.1=0x1B4F
+sparkfunnrf52840mini.pid.1=0x0029
+sparkfunnrf52840mini.vid.2=0x1B4F
+sparkfunnrf52840mini.pid.2=0x8029
+sparkfunnrf52840mini.vid.3=0x1B4F
+sparkfunnrf52840mini.pid.3=0x5284
+
+# Upload
+sparkfunnrf52840mini.bootloader.tool=bootburn
+sparkfunnrf52840mini.upload.tool=nrfutil
+sparkfunnrf52840mini.upload.protocol=nrfutil
+sparkfunnrf52840mini.upload.use_1200bps_touch=true
+sparkfunnrf52840mini.upload.wait_for_upload_port=true
+sparkfunnrf52840mini.upload.maximum_size=815104
+sparkfunnrf52840mini.upload.maximum_data_size=237568
+
+# Build
+sparkfunnrf52840mini.build.mcu=cortex-m4
+sparkfunnrf52840mini.build.f_cpu=64000000
+sparkfunnrf52840mini.build.board=NRF52840_FEATHER
+sparkfunnrf52840mini.build.core=nRF5
+sparkfunnrf52840mini.build.variant=sparkfun_nrf52840_mini
+sparkfunnrf52840mini.build.usb_manufacturer="SparkFun"
+sparkfunnrf52840mini.build.usb_product="nRF52840 Mini Breakout"
+sparkfunnrf52840mini.build.extra_flags=-DNRF52840_XXAA {build.flags.usb}
+sparkfunnrf52840mini.build.ldscript=nrf52840_s140_v6.ld
+sparkfunnrf52840mini.build.openocdscript=scripts/openocd/daplink_nrf52.cfg
+sparkfunnrf52840mini.build.vid=0x1B4F
+sparkfunnrf52840mini.build.pid=0x5284
+sparkfunnrf52840mini.build.uf2_family=0xADA52840
+
+# SoftDevice
+sparkfunnrf52840mini.menu.softdevice.s140v6=S140 6.1.1
+sparkfunnrf52840mini.menu.softdevice.s140v6.build.sd_name=s140
+sparkfunnrf52840mini.menu.softdevice.s140v6.build.sd_version=6.1.1
+sparkfunnrf52840mini.menu.softdevice.s140v6.build.sd_fwid=0x00B6
+
+# Debug
+sparkfunnrf52840mini.menu.debug.l0=Level 0 (Release)
+sparkfunnrf52840mini.menu.debug.l0.build.debug_flags=-DCFG_DEBUG=0
+sparkfunnrf52840mini.menu.debug.l1=Level 1 (Error Message)
+sparkfunnrf52840mini.menu.debug.l1.build.debug_flags=-DCFG_DEBUG=1
+sparkfunnrf52840mini.menu.debug.l2=Level 2 (Full Debug)
+sparkfunnrf52840mini.menu.debug.l2.build.debug_flags=-DCFG_DEBUG=2
+sparkfunnrf52840mini.menu.debug.l3=Level 3 (Segger SystemView)
+sparkfunnrf52840mini.menu.debug.l3.build.debug_flags=-DCFG_DEBUG=3
+sparkfunnrf52840mini.menu.debug.l3.build.sysview_flags=-DCFG_SYSVIEW=1
+
+# Debug output
+sparkfunnrf52840mini.menu.debug_output.serial=Serial
+sparkfunnrf52840mini.menu.debug_output.serial.build.logger_flags=-DCFG_LOGGER=0
+sparkfunnrf52840mini.menu.debug_output.serial1=Serial1
+sparkfunnrf52840mini.menu.debug_output.serial1.build.logger_flags=-DCFG_LOGGER=1 -DCFG_TUSB_DEBUG=CFG_DEBUG
+sparkfunnrf52840mini.menu.debug_output.rtt=Segger RTT
+sparkfunnrf52840mini.menu.debug_output.rtt.build.logger_flags=-DCFG_LOGGER=2 -DCFG_TUSB_DEBUG=CFG_DEBUG -DSEGGER_RTT_MODE_DEFAULT=SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL
